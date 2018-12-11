@@ -5,9 +5,10 @@ ui <- fluidPage(
     
   # sidebar panels  
     sidebarPanel(
-        fileInput("file", "Choose xcms RData file")
+        fileInput("file", "Upload processed spectral data")
     ),
     mainPanel(    
-        uiOutput('table')
+        plotOutput('histCliques'),
+        tableOutput('table')
     )
 )

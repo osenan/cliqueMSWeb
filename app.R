@@ -1,5 +1,5 @@
 library(shiny)
-source("serverhello.R")
-source("uihello.R")
+source("server.R")
+source("ui.R")
 
 shinyApp(ui, server)
