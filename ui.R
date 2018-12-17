@@ -5,7 +5,7 @@ ui <- fluidPage(
     
   # sidebar panels  
     sidebarPanel(
-        fileInput("file", "Upload processed spectral data",
+        fileInput("file", "Upload xcms processed spectral data",
                   accept = c(".rds")),
         # Clique parameters
         numericInput("tol", label = "Tolerance",
@@ -25,13 +25,16 @@ ui <- fluidPage(
                     label =  "Select polarity:",
                     choices = c("positive","negative"),
                     selected = "positive"),
-        checkboxGroupInput("adinfo",
+        radioButtons("adinfo",
                            label = "Choice adduct list:",
                            choices = c("default positive",
                                        "default negative",
                                        "custom adduct list")),
-        fileInput("adinfoFile", "Upload custom adduct list",
-                  accept = c(".csv")),
+        conditionalPanel(
+            condition = "input.adinfo == 'custom adduct list'",
+            fileInput("adinfoFile", "Upload custom adduct list",
+                      accept = c(".csv"))
+        ),
         numericInput("ppmA", label = "ppm adducts",
                      value = 10, min = 1, max = 100, step = 1),
         numericInput("emptyS", label = "empty annotation score",
@@ -47,7 +50,9 @@ ui <- fluidPage(
                     min = 1, max = 50, value = 10),
         withSpinner(plotOutput('histCliques'), type = 5),
         tableOutput('tableCliques'),
-        tableOutput('tableIso'),
-        tableOutput('tableAn')
+        withSpinner(plotOutput('plotIso'), type = 5),
+        withSpinner(plotOutput('plotAn1'), type = 5),
+        downloadButton("dpeaklist", "Download Annotation")
     )
 )
+
