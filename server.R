@@ -2,29 +2,22 @@ options(shiny.maxRequestSize=30*1024^2)
 
 server <- function(input, output, session) {
 
-    # reactive function for uploading xcms data
-    getxcms <- reactive({
-        req(input$file)
-        inFile <- isolate({input$file })
-        filename <- inFile$datapath
-        msSet <- readRDS(filename)
-        validate(
-            need(class(msSet) == "xcmsSet",
-                 "Please, upload a xcmsSet object")
-        )
-        return(msSet)
-    }
+    # reactive function for cliques
+    getcliques <- eventReactive(
+        input$anspectr, {
+            req(input$file)
+            inFile <- isolate({input$file })
+            filename <- inFile$datapath
+            msSet <- readRDS(filename)
+            validate(
+                need(class(msSet) == "xcmsSet",
+                     "Please, upload a xcmsSet object")
+            )
+            anC <- cliqueMS::getCliques(msSet, tol = input$tol)
+            return(anC)
+        }
     )
 
-    
-    # reactive function for cliques
-    getcliques <- eventReactive({
-        input$anspectr
-        req(getxcms())
-        anC <- cliqueMS::getCliques(msSet, tol = input$tol)
-        return(anC)
-    }
-    )
     
     # reactive function for isotopes
     getisotopes <- reactive({
