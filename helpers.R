@@ -17,3 +17,17 @@ mastot <- function(peaklist) {
                   )
     return(mean(meanmass))
 }
+
+searchmass <- function(peaklist, rtmin, rtmax, mm, ppm) {
+    rtminC <- peaklist[peaklist$rtmin >= rtmin,]
+    rtmaxC <- rtminC[rtminC$rtmax <= rtmax,]
+    rowsC <- unique(unlist(lapply(1:5, function(x) {
+        mass = paste("mass",x, sep = "")
+        goodR <- rtmaxC[!is.na(rtmaxC[,mass]),]
+        error <- abs(goodR[,mass]-mm)/mm
+        pos <- which(sqrt(2)*error < ppm*1e-6)
+        candidates <- rownames(goodR[pos,])
+    })))
+    return(rowsC)
+}
+

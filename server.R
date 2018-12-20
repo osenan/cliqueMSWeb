@@ -1,23 +1,55 @@
 options(shiny.maxRequestSize=30*1024^2)
 
 server <- function(input, output, session) {
+    values <- reactiveValues(
+        welcome = 0,
+        slider = 0,
+        computing = 0,
+        isotope = 0)
+    
+    # reactive function for xcms data
+    getmsSet <- reactive({
+        req(input$file)
+        inFile <- isolate({input$file})
+        filename <- inFile$datapath
+        msSet <- readRDS(filename)
+        validate(
+            need(class(msSet) == "xcmsSet",
+                     "Please, upload a xcmsSet object")
+        )
+        return(msSet)
+    }
+    )
+    
 
     # reactive function for cliques
     getcliques <- eventReactive(
-        input$anspectr, {
-            req(input$file)
-            inFile <- isolate({input$file })
-            filename <- inFile$datapath
-            msSet <- readRDS(filename)
-            validate(
-                need(class(msSet) == "xcmsSet",
-                     "Please, upload a xcmsSet object")
-            )
+        input$anspectr,{
+            msSet <- req(getmsSet())
             anC <- cliqueMS::getCliques(msSet, tol = input$tol)
             return(anC)
         }
     )
 
+    # function to show slider input when there is annotation
+    observeEvent(
+        input$anspectr, {
+            values$slider <- 1
+        }
+    )
+
+    # function to activate welcome message
+    observeEvent(
+        input$anspectr, {
+            values$welcome <- 1
+        }
+    )
+
+    observeEvent(
+        input$anspectr, {
+            values$computing <- 1
+        }
+    )
     
     # reactive function for isotopes
     getisotopes <- reactive({
@@ -28,8 +60,10 @@ server <- function(input, output, session) {
                              maxGrade = input$maxGrade,
                              ppm = input$ppmI,
                              isom = input$isoM)
+        isolate({values$computing <- 0})
         return(anI)
     })
+    
     
     # reactive function for annotation
     getannotation <- reactive({
@@ -61,6 +95,66 @@ server <- function(input, output, session) {
                              emptyS = input$emptyS)
         return(anA)
     })
+
+    # search in the table metabolites, given rt, molecular mass, ppm
+    getmettable <- eventReactive(
+        input$tablemm,
+        {
+            anA <- req(getannotation())
+            peaklist <- anA$peaklist
+            rtmin <- input$rtmin
+            rtmax <- input$rtmax
+            mm <- input$mm
+            ppm <- input$mmppm
+            validate(need(rtmin < rtmax,
+                          "Minimal rt has to be smaller than maximum rt")
+                     )
+            validate(
+                need((rtmin >= 0)&&(rtmax >= 0)&&(mm >= 0)&&(ppm >= 0),
+                     "RT, molecular mass and ppm values have to be positive numbers")
+            )
+            rowsC <- searchmass(peaklist, rtmin, rtmax,
+                                mm, ppm)
+            tableMet <- peaklist[rowsC,]
+            return(tableMet)
+        }
+    )
+    
+    # ouput for showing the action button
+    output$fileUploaded <- reactive({
+        getmsSet()
+        if(is.null(input$file)) return(FALSE) else return(TRUE)
+    })
+    # use output fileUploaded even if it is not showed
+    outputOptions(output, "fileUploaded", suspendWhenHidden = FALSE)
+    
+    # output for showing the slider
+    output$sliderOK <- reactive({
+        return(values$slider)
+    })
+    # use output sliderOK even if is is not showed
+    outputOptions(output, "sliderOK", suspendWhenHidden = FALSE)
+
+    # output for welcome message
+    output$welcome <- reactive({
+        return(values$welcome)
+    })
+    # use output welcome even if is is not showed
+    outputOptions(output, "welcome", suspendWhenHidden = FALSE)
+
+    # output for computing cliques message
+    output$computing <- reactive({
+        return(values$computing)
+    })
+    # use output computing even if is is not showed
+    outputOptions(output, "computing", suspendWhenHidden = FALSE)
+
+    # output for isotope messages
+    output$isotope <- reactive({
+        return(values$isotope)
+    })
+    # use output computing even if is is not showed
+    outputOptions(output, "isotope", suspendWhenHidden = FALSE)
 
     
     # histogram output for cliques 
@@ -120,6 +214,14 @@ server <- function(input, output, session) {
                 xlab = "% of features")
     })
 
+    output$metT <- renderTable({
+        peaklist <- getmettable()
+        res <- peaklist[,c("mz","rt","maxo","isotope","an1","mass1",
+                           "an2", "mass2","an3","mass3","an4",
+                           "mass4", "an5", "mass5")]
+    })
+        
+    
     # download peaklist
     output$dpeaklist <- downloadHandler(
         filename <- function() {
