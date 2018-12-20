@@ -1,5 +1,7 @@
 options(shiny.maxRequestSize=30*1024^2)
 
+source("helpers.R")
+
 example.data <- readRDS("./data/standards.rds")
 positive.adlist <- read.csv("data/positive.adinfo.csv",
                           header = T)
