@@ -1,6 +1,4 @@
 library(shiny)
-library(shinycssloaders)
-library(ggplot2)
 source("helpers.R")
 source("server.R")
 source("ui.R")

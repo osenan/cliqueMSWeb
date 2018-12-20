@@ -77,14 +77,14 @@ ui <- fluidPage(
                    sliderInput(inputId = "breaksH",
                                label = "Clique size breaks:",
                                min = 1, max = 50, value = 10),
-                   withSpinner(plotOutput('histCliques'), type = 5),
+                   shinycssloaders::withSpinner(plotOutput('histCliques'), type = 5),
                    withTags({
                        div(class = "header", checked = NA,
                            h4("Annotation of isotopes is done")
                            )
                    })
                ),
-               withSpinner(plotOutput('plotIso'), type = 5),
+               shinycssloaders::withSpinner(plotOutput('plotIso'), type = 5),
                conditionalPanel(
                    condition = 'output.plotIso',
                    withTags({
@@ -93,7 +93,7 @@ ui <- fluidPage(
                            )
                    })
                ),
-               withSpinner(plotOutput('plotAn1'), type = 5)
+               shinycssloaders::withSpinner(plotOutput('plotAn1'), type = 5)
                ),
         conditionalPanel(
             condition = 'output.plotAn1',
