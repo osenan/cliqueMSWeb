@@ -1,5 +1,12 @@
 options(shiny.maxRequestSize=30*1024^2)
 
+example.data <- readRDS("./data/standards.rds")
+positive.adlist <- read.csv("data/positive.adinfo.csv",
+                          header = T)
+negative.adlist <- read.csv("data/negative.adinfo.csv",
+                          header = T)
+
+
 server <- function(input, output, session) {
     values <- reactiveValues(
         welcome = 0,
