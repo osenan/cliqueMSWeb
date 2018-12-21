@@ -1,28 +1,44 @@
 ui <- fluidPage(
-
+  # Change color of all hyperlinks                
+                    
+                    
   # App title ----
-    column(12, align = "center",titlePanel("CliqueMS Web")),
-    tags$br(),
-    
-    
-  # sidebar panels  
-    sidebarPanel(
+    titlePanel("CliqueMS Web"),
 
-        fileInput("file", "Upload xcms processed spectral data",
+    
+    
+  # sidebar
+    sidebarPanel(
+#        tags$head(tags$style(HTML("
+#    .skin-aqua .sidebar a { color: #432; }")
+                                        #    )),
+    br(),
+#    column(10,align = "left",
+           downloadLink("rawE",
+                        "Example raw data"),
+    fileInput("raw", "Raw spectral data",
+                  accept = c(".mzXML,mzML")),
+    #column(10, align = "left",
+               downloadLink("rds",
+                            "Example processed data"),
+#               ),
+        fileInput("file",
+                  "XCMS processed spectral data",
                   accept = c(".rds")),
-        # Clique parameters
-        numericInput("tol", label = "Tolerance",
-                     value = 1e-5, min = 1e-7, max = 1e-3,
-                     step = 5e-8),
-        # Isotope parameters
-        numericInput("ppmI", label = "ppm isotopes",
-                     value = 10, min = 1, max = 100, step = 1),
-        numericInput("isoM", label = "isotope mass value",
-                    value = 1.003355, min = 1,0033, max = 1.004),
-        numericInput("maxGrade", label = "maxGrade", value = 2,
-                     min = 1, max = 6, step = 1),
-        numericInput("maxCharge", label = "maxCharge", value = 3,
-                     min = 1, max = 5),
+            #Clique parameters
+            numericInput("tol", label = "Tolerance",
+                         value = 1e-5, min = 1e-7, max = 1e-3,
+                         step = 5e-8),
+            # Isotope parameters
+            numericInput("ppmI", label = "ppm isotopes",
+                         value = 10, min = 1, max = 100, step = 1),
+            numericInput("isoM", label = "isotope mass value",
+                         value = 1.003355, min = 1,0033,
+                         max = 1.004),
+            numericInput("maxGrade", label = "maxGrade", value = 2,
+                         min = 1, max = 6, step = 1),
+            numericInput("maxCharge", label = "maxCharge", value = 3,
+                         min = 1, max = 5),
         # Annotation parameters
         selectInput("polarity",
                     label =  "Select polarity:",
@@ -55,7 +71,7 @@ ui <- fluidPage(
             condition = 'output.welcome == 0',
             withTags({
                 div(class = "header", checked = NA,
-                    p("Welcome to cliqueMS Web, please upload your processed spectral data, set parameters and start annotation")
+                    p("Welcome to cliqueMS Web, please upload spectral data, set parameters and start annotation")
                     )
             })
         ),
@@ -116,7 +132,8 @@ ui <- fluidPage(
                    }),
             column(10, align = "center",
                    downloadButton("dpeaklist",
-                                  "Download Annotation"))
+                                  "Download Annotation"),
+                               br())
         )
         
     )

@@ -7,6 +7,7 @@ positive.adlist <- read.csv("data/positive.adinfo.csv",
                           header = T)
 negative.adlist <- read.csv("data/negative.adinfo.csv",
                           header = T)
+example.msSet <- xcms::xcmsSet("./data/standards.mzXML", method = "centWave", ppm = 15, peakwidth = c(5,20), snthresh = 10)
 
 
 server <- function(input, output, session) {
@@ -26,6 +27,9 @@ server <- function(input, output, session) {
             need(class(msSet) == "xcmsSet",
                      "Please, upload a xcmsSet object")
         )
+        req(input$raw)
+        rawinFile <- isolate({input$raw})
+        msSet@filepaths = as.character(rawinFile$datapath)
         return(msSet)
     }
     )
@@ -128,6 +132,27 @@ server <- function(input, output, session) {
             return(tableMet)
         }
     )
+
+    # output for downloading example processed daat
+    output$rds <- downloadHandler(
+        filename <- function() {
+            "example.rds"
+        },
+        content <- function(file) {
+            saveRDS(example.data, file)
+        }
+    )
+
+    # output raw
+        output$rawE <- downloadHandler(
+        filename <- function() {
+            "standards.mzXML"
+        },
+        content <- function(file) {
+            saveRDS(example.msSet, file)
+        }
+    )
+
     
     # ouput for showing the action button
     output$fileUploaded <- reactive({
