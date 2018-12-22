@@ -35,4 +35,4 @@ complete profile data. That is why you need to upload the raw data.
 
 You can use the spectral example data for practise:
 
-![alt text](https://github.com/osenan/cliqueMSWeb/FigsTutorial/example.png"Example raw spectral data")
+![alt text](https://github.com/osenan/cliqueMSWeb/FigsTutorial/example.png)
