@@ -20,7 +20,10 @@ To use cliqueMS Web locally.
 ### Introduction
 
 CliqueMS Web annotates processed LC/MS data. It provides annotation
-for isotopes, ion-adducts and fragmentation adducts.
+for isotopes, ion-adducts and fragmentation adducts. The algorithm
+consists on first separating the features in clique-Groups. Then,
+for each within each group it find isotope annotation and finally
+adduct annotation.
 The web application is based on `cliqueMS` package functions.
 As in the package, CliqueMS Web analyses samples individually,
 however, if you need to annotate a large amount of samples,
@@ -59,3 +62,17 @@ The `tol` parameter sets the minimum relative increase in log-likelihood.
 ![](./FigsTutorial/tol.png)
 
 #### Isotope parameters
+
+An important number of features inside groups correspond to metabolite
+isotopes. CliqueMS Web annotates carbon isotopes. Two features are
+considered isotopes if the difference in m/z and intensity
+fits the mass difference specified by `isotope mass value` parameter within the
+range of a relative error specified by `isotope ppm parameter`.
+
+![](./FigsTutorial/isotopepars1.png)
+
+The `maxGrade` par controls the maximum number of isotopes allowed for a
+monoisotopic feature, and the `maxCharge` parameter controls the different
+charge values (from 1 to `maxCharge`) when two m/z values are compared.
+
+![](./FigsTutorial/isotopepars2.png)
