@@ -74,6 +74,8 @@ ui <- fluidPage(
     mainPanel(
         conditionalPanel(
             condition = 'output.welcome == 0',
+            a(href = "https://github.com/osenan/cliqueMSWeb/blob/master/README.md",
+              "See tutorial here"),
             withTags({
                 div(class = "header", checked = NA,
                     p("Welcome to cliqueMS Web, please upload spectral data, set parameters and start annotation")
