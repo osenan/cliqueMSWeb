@@ -139,21 +139,10 @@ server <- function(input, output, session) {
             "example.rds"
         },
         content <- function(file) {
-            saveRDS(example.data, file)
+            saveRDS(example.data, file = file)
         }
     )
 
-    # output raw
-        output$rawE <- downloadHandler(
-        filename <- function() {
-            "standards.mzXML"
-        },
-        content <- function(file) {
-            saveRDS(example.msSet, file)
-        }
-    )
-
-    
     # ouput for showing the action button
     output$fileUploaded <- reactive({
         getmsSet()
@@ -189,6 +178,28 @@ server <- function(input, output, session) {
     })
     # use output computing even if is is not showed
     outputOptions(output, "isotope", suspendWhenHidden = FALSE)
+
+    output$posDlist <- downloadHandler(
+        filename = function() {
+            "positive.adinfo.csv"
+        },
+        content = function(file) {
+            write.table(positive.adlist,
+                        sep = ",", row.names = F,
+                        file = file)
+        }
+    )
+            
+    output$negDlist <- downloadHandler(
+        filename = function() {
+            "negative.adinfo.csv"
+        },
+        content = function(file) {
+            write.table(negative.adlist,
+                        sep = ",", row.names = F,
+                        file = file)
+        }
+    )
 
     
     # histogram output for cliques 
