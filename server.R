@@ -105,7 +105,8 @@ server <- function(input, output, session) {
                              adinfo = fadinfo,
                              polarity = input$polarity,
                              ppm = input$ppmA,
-                             emptyS = input$emptyS)
+                             emptyS = input$emptyS,
+                             normalizeScore = TRUE)
         return(anA)
     })
 

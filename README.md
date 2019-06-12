@@ -150,6 +150,10 @@ that between 1 and 100 seconds have a molecular mass of 663,45 Da within 20 ppm.
 ![](./FigsTutorial/aductsres2.png)
 
 Finally, with the Download Annotation button you can download a csv table with the
-complete annotation for all features in your data.
-
+complete annotation for all features in your data. This table also contains the
+normalized score, useful to compare the confidence of each annotation. The normalized
+score goes from 0, which represents the empty annotation (all features of the
+group without annotation) until 100, which is the theoretical maximum annotation
+(all the features of the group annotated, with the most frequent adducts and
+with the minimum number of neutral masses).
 ![](./FigsTutorial/aductsres3.png)
